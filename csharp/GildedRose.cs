@@ -14,7 +14,7 @@ namespace csharp
         {
             foreach (DefaultItem item in Items)
             {
-                item.UpdateQuality() ;
+                item.UpdateQuality();
 
                 item.UpdateSellIn();
             }
@@ -25,6 +25,34 @@ namespace csharp
 
     public class DefaultItem : Item
     {
+        private const int MAX_QUALITY = 50;
+
+        protected void DecrementSellIn()
+        {
+            this.SellIn -= 1;
+        }
+
+        protected void DecrementQuality()
+        {
+            if (this.Quality > 0)
+            {
+                this.Quality -= 1;
+            }
+        }
+
+        protected void IncrementQuality()
+        {
+            if (this.Quality < MAX_QUALITY)
+            {
+                this.Quality += 1;
+            }
+        }
+
+        protected bool IsExpired()
+        {
+            return this.SellIn <= 0;
+        }
+
         public virtual void UpdateQuality()
         {
             this.DecrementQuality();
@@ -73,46 +101,16 @@ namespace csharp
                 this.Quality = 0;
             }
         }
-        }
+    }
 
 
-        public class Sulfuras : DefaultItem
+    public class Sulfuras : DefaultItem
+    {
+        public override void UpdateQuality() { }
+
+        public override void UpdateSellIn()
         {
-            public override void UpdateQuality() { }
-            
-            public override void UpdateSellIn()
-            {
-            }
-        }
-
-        public static class ItemExtension
-        {
-            private const int MAX_QUALITY = 50;
-
-            public static void DecrementSellIn(this Item item)
-            {
-                item.SellIn -= 1;
-            }
-
-            public static void DecrementQuality(this Item item)
-            {
-                if (item.Quality > 0)
-                {
-                    item.Quality -= 1;
-                }
-            }
-
-            public static void IncrementQuality(this Item item)
-            {
-                if (item.Quality < MAX_QUALITY)
-                {
-                    item.Quality += 1;
-                }
-            }
-
-            public static bool IsExpired(this Item item)
-            {
-                return item.SellIn <= 0;
-            }
         }
     }
+
+}

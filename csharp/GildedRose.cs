@@ -4,7 +4,6 @@ namespace csharp
 {
     public class GildedRose
     {
-        private const int MAX_QUALITY = 50;
         IList<Item> Items;
         public GildedRose(IList<Item> Items)
         {
@@ -17,20 +16,20 @@ namespace csharp
             {
                 if (item.Name == "Aged Brie")
                 {
-                    IncrementQuality(item);
+                    item.IncrementQuality();
                 }
                 else if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
                 {
-                    IncrementQuality(item);
+                    item.IncrementQuality();
 
                     if (item.SellIn < 11)
                     {
-                        IncrementQuality(item);
+                        item.IncrementQuality();
                     }
 
                     if (item.SellIn < 6)
                     {
-                        IncrementQuality(item);
+                        item.IncrementQuality();
                     }
                 }
                 else if (item.Name == "Sulfuras, Hand of Ragnaros")
@@ -38,7 +37,7 @@ namespace csharp
                 }
                 else
                 {
-                    DecrementQuality(item);
+                    item.DecrementQuality();
                 }
 
                 if (item.Name == "Sulfuras, Hand of Ragnaros")
@@ -46,40 +45,52 @@ namespace csharp
                 }
                 else
                 {
-                    DecrementSellIn(item);
+                    item.DecrementSellIn();
                 }
 
-                if (item.SellIn < 0)
+                if (item.Name == "Aged Brie")
                 {
-                    if (item.Name == "Aged Brie")
+                    if (item.IsExpired())
                     {
-                        IncrementQuality(item);
+                        item.IncrementQuality();
                     }
-                    else
+                }
+                else if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
+                {
+                    if (item.IsExpired())
                     {
-                        if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
-                        {
-                            item.Quality = 0;
-                        }
-                        else if (item.Name == "Sulfuras, Hand of Ragnaros")
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            DecrementQuality(item);
-                        }
+                        item.Quality = 0;
+                    }
+                }
+                else if (item.Name == "Sulfuras, Hand of Ragnaros")
+                {
+                    if (item.IsExpired())
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (item.IsExpired())
+                    {
+                        item.DecrementQuality();
                     }
                 }
             }
         }
 
-        private static void DecrementSellIn(Item item)
+
+    }
+    public static class ItemExtension
+    {
+        private const int MAX_QUALITY = 50;
+
+        public static void DecrementSellIn(this Item item)
         {
             item.SellIn -= 1;
         }
 
-        private static void DecrementQuality(Item item)
+        public static void DecrementQuality(this Item item)
         {
             if (item.Quality > 0)
             {
@@ -87,12 +98,17 @@ namespace csharp
             }
         }
 
-        private static void IncrementQuality(Item item)
+        public static void IncrementQuality(this Item item)
         {
             if (item.Quality < MAX_QUALITY)
             {
                 item.Quality += 1;
             }
+        }
+
+        public static bool IsExpired(this Item item)
+        {
+            return item.SellIn < 0;
         }
     }
 }

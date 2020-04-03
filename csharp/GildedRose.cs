@@ -14,9 +14,20 @@ namespace csharp
         {
             foreach (var item in Items)
             {
+                if (item.Name == "Sulfuras, Hand of Ragnaros")
+                {
+                    continue;
+                }
+
                 if (item.Name == "Aged Brie")
                 {
                     item.IncrementQuality();
+                    item.DecrementSellIn();
+                    if (item.IsExpired())
+                    {
+                        item.IncrementQuality();
+                    }
+
                 }
                 else if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
                 {
@@ -31,46 +42,16 @@ namespace csharp
                     {
                         item.IncrementQuality();
                     }
-                }
-                else if (item.Name == "Sulfuras, Hand of Ragnaros")
-                {
-                }
-                else
-                {
-                    item.DecrementQuality();
-                }
-
-                if (item.Name == "Sulfuras, Hand of Ragnaros")
-                {
-                }
-                else
-                {
                     item.DecrementSellIn();
-                }
-
-                if (item.Name == "Aged Brie")
-                {
-                    if (item.IsExpired())
-                    {
-                        item.IncrementQuality();
-                    }
-                }
-                else if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
-                {
                     if (item.IsExpired())
                     {
                         item.Quality = 0;
                     }
                 }
-                else if (item.Name == "Sulfuras, Hand of Ragnaros")
-                {
-                    if (item.IsExpired())
-                    {
-                        continue;
-                    }
-                }
                 else
                 {
+                    item.DecrementQuality();
+                    item.DecrementSellIn();
                     if (item.IsExpired())
                     {
                         item.DecrementQuality();
